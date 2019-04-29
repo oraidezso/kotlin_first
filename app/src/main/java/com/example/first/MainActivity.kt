@@ -15,36 +15,25 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            Log.println(Log.ERROR,"${asd.width}","${asd.width}magic")
+            val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
+            for (i in 0..bm.width-1) {
+                for (j in 0..bm.height-1 step 3){
+                    bm.setPixel(i,j,Color.RED)
+                }
+
+            }
+            asd.setImageBitmap(bm)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        var bm=Bitmap.createBitmap(50,100,Bitmap.Config.ARGB_8888)
-//        Log.println(1,"${imageView.width.}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-//        Log.println(1,"${imageView.width}","asd")
-//        Log.println(1,"${imageView.height}","asd")
-        for (i in 0..imageView.width-1) {
-            for (j in 0..imageView.height-1){
-                bm.setPixel(Color.red(0),i,j)
-            }
 
-        }
-        imageView.setImageBitmap(bm)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
