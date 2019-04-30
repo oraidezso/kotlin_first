@@ -1,8 +1,10 @@
 package com.example.first
 
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -13,22 +15,39 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity() {
 
+class MainActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
+
         if (hasFocus) {
             Log.println(Log.ERROR,"${asd.width}","${asd.width}magic")
             val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
-            for (i in 0..bm.width-1) {
-                for (j in 0..bm.height-1 step 3){
-                    bm.setPixel(i,j,Color.RED)
-                }
-
-            }
+            val drawer= Drawer(bm)
             asd.setImageBitmap(bm)
+            drawer.test()
         }
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+//        if (newConfig != null) {
+//            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
+//                val drawer= Drawer(bm)
+//                asd.setImageBitmap(bm)
+//                drawer.test()
+//                Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
+//            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
+//                val drawer= Drawer(bm)
+//                asd.setImageBitmap(bm)
+//                drawer.test()
+//                Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
+//            }
+//        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
