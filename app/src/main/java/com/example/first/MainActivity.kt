@@ -2,7 +2,6 @@ package com.example.first
 
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
@@ -11,25 +10,45 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
+        toolbar.run {
+            animate().run {
+                translationY(-toolbar.bottom.toFloat()).start()
+            }
+        }
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus) {
-            Log.println(Log.ERROR,"${asd.width}","${asd.width}magic")
+            Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
+            Log.println(Log.ERROR,"${asd.measuredHeight}","${asd.measuredWidth}magic")
             val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
             val drawer= Drawer(bm)
             asd.setImageBitmap(bm)
-            drawer.test()
+         //   drawer.triangle(Point(0,0),Point(0,500),Point(500,0))
+//            drawer.triangle(
+//                Point(0,35),
+//                Point(0,asd.height),
+//                Point(asd.width,35),
+//                Color.GREEN
+//            )
+            drawer.rectangle(
+                Point(50,500),
+                Point(50,800),
+                Point(500,800),
+                Point(500,500),
+                Color.RED
+            )
+            //drawer.test()
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
+
         super.onConfigurationChanged(newConfig)
 //        if (newConfig != null) {
 //            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
