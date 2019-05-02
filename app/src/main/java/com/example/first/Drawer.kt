@@ -4,8 +4,6 @@ import android.graphics.*
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.graphics.Bitmap
-import android.util.Log
-import kotlin.arrayOf
 
 
 
@@ -21,20 +19,10 @@ class Drawer(bitmap: Bitmap) {
         val paint = Paint()
         paint.color = Color.RED
         canvas.drawRect(100.0F, 500.0F, 300.0F, 600.0F, paint)
-//        for (i in 0 until bm.width) {
-//            for (j in 0 until bm.height step 20) {
-//                bm.setPixel(i, j, Color.RED)
-//            }
-//        }
-//        for (i in 0 until bm.width step 20) {
-//            for (j in 0 until bm.height) {
-//                bm.setPixel(i, j, Color.RED)
-//            }
-//        }
-        //var asd = Rect()
+
     }
 
-    fun triangle(p1: Point, p2: Point, p3: Point, color: Int) {
+    fun drawTriangle(p1: Point, p2: Point, p3: Point, color: Int) {
         val paint = Paint()
         paint.color = color
         paint.style = Paint.Style.FILL_AND_STROKE
@@ -50,7 +38,7 @@ class Drawer(bitmap: Bitmap) {
         canvas.drawPath(path, paint)
     }
 
-    fun rectangle(p1: Point, p2: Point, p3: Point, p4: Point, color: Int) {
+    fun drawRectangle(p1: Point, p2: Point, p3: Point, p4: Point, color: Int) {
         val paint = Paint()
         paint.color = color
         paint.style = Paint.Style.FILL_AND_STROKE
@@ -66,10 +54,6 @@ class Drawer(bitmap: Bitmap) {
         canvas.drawPath(path, paint)
     }
 
-    var minX: Int = 0
-    var minY: Int = 0
-    var maxX: Int = 0
-    var maxY: Int = 0
 
 
 

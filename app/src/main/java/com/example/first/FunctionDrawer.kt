@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
 import android.widget.ImageView
+import java.lang.Exception
 
 class FunctionDrawer(imageView: ImageView) {
     private val iv=imageView
@@ -15,21 +16,28 @@ class FunctionDrawer(imageView: ImageView) {
         iv.setImageBitmap(bm2)
     }
 
-    fun calcFValues(f:(Double,Double)->Double,minX:Double,maxX:Double,minY:Double,maxY:Double): IntArray{
+    private fun calcFValues(f:(Double, Double)->Double, minX:Double, maxX:Double, minY:Double, maxY:Double): IntArray{
         val height=iv.height
         val width=iv.width
+
         var minVal = f(minX, minY)
         var maxVal = f(minX, minY)
         val stepX = (maxX - minX) / width
         val stepY = (maxY - minY) / height
         val fValues = DoubleArray(width*height)
-
         var x = minX
         var y = minY
         var akt: Double
+
         for (i in 0 until height) {
             for (j in 0 until width) {
-                akt = f(x, y)
+                try {
+                    akt = f(x, y)
+                }catch (exception:Exception){
+                    akt=0.0
+                    Log.println(Log.ERROR,"function error","${exception.message}")
+                }
+
                 fValues[i*width+j]=akt
                 if (akt < minVal) minVal = akt
                 if (akt > maxVal) maxVal = akt
@@ -38,10 +46,9 @@ class FunctionDrawer(imageView: ImageView) {
             x = minX
             y += stepY
         }
-        Log.println(Log.ERROR,"asd","magic")
+
         val maxDifference = maxVal - minVal
         val normalizedFValues = IntArray(width*height)
-
 
         for (i in 0 until height) {
             for (j in 0 until width) {
@@ -49,7 +56,6 @@ class FunctionDrawer(imageView: ImageView) {
                 normalizedFValues[i*width+j] = Color.argb(255,normalizedValue,normalizedValue,normalizedValue)
             }
         }
-        Log.println(Log.ERROR,"asd","magic")
         return normalizedFValues
     }
 }
