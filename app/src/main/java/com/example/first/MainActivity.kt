@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity() {
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         toolbar.run {
             animate().run {
@@ -26,9 +27,11 @@ class MainActivity : AppCompatActivity() {
         if (hasFocus) {
             Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
             Log.println(Log.ERROR,"${asd.measuredHeight}","${asd.measuredWidth}magic")
-            val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
-            val drawer= Drawer(bm)
-            asd.setImageBitmap(bm)
+            //val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
+            val drawer= FunctionDrawer(asd)
+            drawer.drawFunction({x,y-> Math.sin(x * y) },-4.0,4.0,-4.0, 4.0)
+
+
          //   drawer.triangle(Point(0,0),Point(0,500),Point(500,0))
 //            drawer.triangle(
 //                Point(0,35),
@@ -36,35 +39,36 @@ class MainActivity : AppCompatActivity() {
 //                Point(asd.width,35),
 //                Color.GREEN
 //            )
-            drawer.rectangle(
-                Point(50,500),
-                Point(50,800),
-                Point(500,800),
-                Point(500,500),
-                Color.RED
-            )
+//            drawer.rectangle(
+//                Point(50,500),
+//                Point(50,800),
+//                Point(500,800),
+//                Point(500,500),
+//                Color.RED
+//            )
             //drawer.test()
+            //drawer.drawFunction({x,y-> Math.sin(x + y) },-4.0,4.0,-4.0, 4.0)
+
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
 
         super.onConfigurationChanged(newConfig)
-//        if (newConfig != null) {
+        if (newConfig != null) {
 //            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//                val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
-//                val drawer= Drawer(bm)
-//                asd.setImageBitmap(bm)
-//                drawer.test()
-//                Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
+//                asd.requestLayout()
+//                val drawer= FunctionDrawer(asd)
+//                drawer.drawFunction({x,y-> Math.sin(x * y) },-4.0,4.0,-4.0, 4.0)
+//                Log.println(Log.ERROR,"${asd.height}","${asd.measuredWidth}magic")
 //            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//                val bm=Bitmap.createBitmap(asd.width,asd.height,Bitmap.Config.ARGB_8888)
-//                val drawer= Drawer(bm)
-//                asd.setImageBitmap(bm)
-//                drawer.test()
+//                asd.requestLayout()
+//                val drawer= FunctionDrawer(asd)
+//
+//                drawer.drawFunction({x,y-> Math.sin(x * y) },-4.0,4.0,-4.0, 4.0)
 //                Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
 //            }
-//        }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
