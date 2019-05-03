@@ -12,11 +12,12 @@ class FunctionDrawer(imageView: ImageView) {
     fun drawFunction(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double){
         if (minX >= maxX || minY >= maxY) return
         val fValues = calcFValues(f, minX, maxX, minY, maxY)
-        val bm2= Bitmap.createBitmap(fValues,iv.width, iv.height, Bitmap.Config.ARGB_8888)
+        val pixels = pixelateFValues(fValues)
+        val bm2= Bitmap.createBitmap(pixels,iv.width, iv.height, Bitmap.Config.ARGB_8888)
         iv.setImageBitmap(bm2)
     }
 
-    private fun calcFValues(f:(Double, Double)->Double, minX:Double, maxX:Double, minY:Double, maxY:Double): IntArray{
+    private fun calcFValues(f:(Double, Double)->Double, minX:Double, maxX:Double, minY:Double, maxY:Double): DoubleArray{
         val height=iv.height
         val width=iv.width
 
@@ -48,11 +49,21 @@ class FunctionDrawer(imageView: ImageView) {
         }
 
         val maxDifference = maxVal - minVal
-        val normalizedFValues = IntArray(width*height)
 
         for (i in 0 until height) {
             for (j in 0 until width) {
-                val normalizedValue=((fValues[i*width+j] - minVal) * 255 / maxDifference).toInt()
+                fValues[i*width+j]  =(fValues[i*width+j] - minVal) / maxDifference
+            }
+        }
+        return fValues
+    }
+    fun pixelateFValues(fValues:DoubleArray):IntArray{
+        val height=iv.height
+        val width= iv.width
+        val normalizedFValues = IntArray(width*height)
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                val normalizedValue=(fValues[i*width+j] * 255 ).toInt()
                 normalizedFValues[i*width+j] = Color.argb(255,normalizedValue,normalizedValue,normalizedValue)
             }
         }
