@@ -9,15 +9,27 @@ import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity() {
-
+    val functions = arrayOf<(Double, Double) -> Double>(
+        { x, y -> Math.sin(y / x) },
+        { x, y -> Math.sin(y * x) },
+        { x, y -> Math.sin(y) + Math.cos(x) },
+        { x, y -> Math.sin(x) * Math.cos(y) },
+        { x, y -> Math.sin(y + x) },
+        { x, y -> Math.sin(x * x + y * y) }
+    )
+    var current=0
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus) {
 //            Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
 //            Log.println(Log.ERROR,"${asd.measuredHeight}","${asd.measuredWidth}magic")
-            val drawer= FunctionDrawer(asd)
-            drawer.drawFunction({x,y-> -Math.sin(y/x) }, -3.0,3.0,-Math.PI, Math.PI)
+            val drawer = FunctionDrawer(asd)
+
+
+            drawer.mode = 0
+            drawer.K = 10
+            drawer.drawFunction(functions[current], -10.0, 10.0, -10.0, 10.0)
 
         }
     }
@@ -28,10 +40,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-//        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
+//                view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
-//        }
+            if(++current == functions.size) current=0
+            onWindowFocusChanged(true)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

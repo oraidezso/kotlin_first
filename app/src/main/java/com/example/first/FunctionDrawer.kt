@@ -4,28 +4,35 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
 import android.widget.ImageView
-import java.lang.Exception
 
 class FunctionDrawer(imageView: ImageView) {
-    private val iv=imageView
+    private val iv = imageView
+    var K = 20
+        set(value) {
+            field = if (value > 2) value else 2
+        }
+    var mode=0
+        set(value) {field=if(value>1)0 else value}
 
-    fun drawFunction(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double){
+
+    fun drawFunction(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double) {
         if (minX >= maxX || minY >= maxY) return
         val fValues = calcFValues(f, minX, maxX, minY, maxY)
-        val pixels = pixelateFValues(fValues)
-        val bm2= Bitmap.createBitmap(pixels,iv.width, iv.height, Bitmap.Config.ARGB_8888)
+        val pixels = if(mode==0) pixelsFromFValues(fValues)
+            else myPixelsFromFValues(fValues)
+        val bm2 = Bitmap.createBitmap(pixels, iv.width, iv.height, Bitmap.Config.ARGB_8888)
         iv.setImageBitmap(bm2)
     }
 
-    private fun calcFValues(f:(Double, Double)->Double, minX:Double, maxX:Double, minY:Double, maxY:Double): DoubleArray{
-        val height=iv.height
-        val width=iv.width
+    private fun calcFValues(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double): DoubleArray {
+        val height = iv.height
+        val width = iv.width
 
         var minVal = f(minX, minY)
         var maxVal = f(minX, minY)
         val stepX = (maxX - minX) / width
         val stepY = (maxY - minY) / height
-        val fValues = DoubleArray(width*height)
+        val fValues = DoubleArray(width * height)
         var x = minX
         var y = minY
         var akt: Double
@@ -34,12 +41,12 @@ class FunctionDrawer(imageView: ImageView) {
             for (j in 0 until width) {
                 try {
                     akt = f(x, y)
-                }catch (exception:Exception){
-                    akt=0.0
-                    Log.println(Log.ERROR,"function error","${exception.message}")
+                } catch (exception: Exception) {
+                    akt = 0.0
+                    Log.println(Log.ERROR, "function error", "${exception.message}")
                 }
 
-                fValues[i*width+j]=akt
+                fValues[i * width + j] = akt
                 if (akt < minVal) minVal = akt
                 if (akt > maxVal) maxVal = akt
                 x += stepX
@@ -52,21 +59,40 @@ class FunctionDrawer(imageView: ImageView) {
 
         for (i in 0 until height) {
             for (j in 0 until width) {
-                fValues[i*width+j]  =(fValues[i*width+j] - minVal) / maxDifference
+                fValues[i * width + j] = (fValues[i * width + j] - minVal) / maxDifference
             }
         }
         return fValues
     }
-    fun pixelateFValues(fValues:DoubleArray):IntArray{
-        val height=iv.height
-        val width= iv.width
-        val normalizedFValues = IntArray(width*height)
+
+    private fun pixelsFromFValues(fValues: DoubleArray): IntArray {
+        val height = iv.height
+        val width = iv.width
+        val pixels = IntArray(width * height)
         for (i in 0 until height) {
             for (j in 0 until width) {
-                val normalizedValue=(fValues[i*width+j] * 255 ).toInt()
-                normalizedFValues[i*width+j] = Color.argb(255,normalizedValue,normalizedValue,normalizedValue)
+                val isBlack = ((fValues[i * width + j] * K).toInt()) % 2 == 0
+                pixels[i * width + j] = if(isBlack)Color.BLACK else Color.WHITE
             }
         }
-        return normalizedFValues
+        return pixels
+    }
+
+    private fun myPixelsFromFValues(fValues: DoubleArray): IntArray {
+        val height = iv.height
+        val width = iv.width
+        val pixels = IntArray(width * height)
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                val colorValue = (fValues[i * width + j] * 255).toInt()
+                pixels[i * width + j] = Color.argb(
+                    255,
+                    colorValue,
+                    colorValue,
+                    colorValue
+                )
+            }
+        }
+        return pixels
     }
 }
