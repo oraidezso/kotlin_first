@@ -14,6 +14,8 @@ class FunctionDrawer(imageView: ImageView) {
     var mode=0
         set(value) {field=if(value>1)0 else value}
 
+    var rotation=0
+        set(value) {field=value%360}
 
     fun drawFunction(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double) {
         if (minX >= maxX || minY >= maxY) return
@@ -27,7 +29,6 @@ class FunctionDrawer(imageView: ImageView) {
     private fun calcFValues(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double): DoubleArray {
         val height = iv.height
         val width = iv.width
-
         var minVal = f(minX, minY)
         var maxVal = f(minX, minY)
         val stepX = (maxX - minX) / width
@@ -36,11 +37,14 @@ class FunctionDrawer(imageView: ImageView) {
         var x = minX
         var y = minY
         var akt: Double
+        val rot= rotation.toDouble()/360*2*Math.PI
 
         for (i in 0 until height) {
             for (j in 0 until width) {
                 try {
-                    akt = f(x, y)
+                    val rotx= x*Math.cos(rot)-y*Math.sin(rot)
+                    val roty= x*Math.sin(rot)+y*Math.cos(rot)
+                    akt = f(rotx, roty)
                 } catch (exception: Exception) {
                     akt = 0.0
                     Log.println(Log.ERROR, "function error", "${exception.message}")

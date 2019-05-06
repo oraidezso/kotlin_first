@@ -1,14 +1,20 @@
 package com.example.first
 
 import android.os.Bundle
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity() {
+    lateinit var drawer :FunctionDrawer
+    private lateinit var mDetector: GestureDetectorCompat
     val functions = arrayOf<(Double, Double) -> Double>(
         { x, y -> Math.sin(y / x) },
         { x, y -> Math.sin(y * x) },
@@ -18,13 +24,14 @@ class MainActivity : AppCompatActivity() {
         { x, y -> Math.sin(x * x + y * y) }
     )
     var current=0
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus) {
 //            Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
 //            Log.println(Log.ERROR,"${asd.measuredHeight}","${asd.measuredWidth}magic")
-            val drawer = FunctionDrawer(asd)
+
 
 
             drawer.mode = 0
@@ -39,7 +46,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
+        drawer = FunctionDrawer(asd)
+        mDetector = GestureDetectorCompat(this, MyGestureListener())
         fab.setOnClickListener {
 //                view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -62,6 +70,34 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        mDetector.onTouchEvent(event)
+        return super.onTouchEvent(event)
+    }
+
+    private inner class MyGestureListener : GestureDetector.SimpleOnGestureListener() {
+
+        override fun onFling(
+            event1: MotionEvent,
+            event2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            Log.e("tag","onFling: ${event1.x - event2.x}")
+            //event1.x - event2.x
+            if(event1.y>asd.height/2) {
+                drawer.rotation = drawer.rotation - (event1.x - event2.x).toInt() / 10
+                //Log.e("tag", "onFling: ${event1.y}")
+            }
+            else {
+                drawer.rotation = drawer.rotation + (event1.x - event2.x).toInt() / 10
+            }
+            onWindowFocusChanged(true)
+            return true
         }
     }
 }
