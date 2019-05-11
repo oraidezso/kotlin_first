@@ -37,13 +37,14 @@ class FunctionDrawer(imageView: ImageView) {
         var x = minX
         var y = minY
         var akt: Double
-        val rot= rotation.toDouble()/360*2*Math.PI
+        val rotc = Math.cos(rotation.toDouble()/360*2*Math.PI)
+        val rots = Math.sin(rotation.toDouble()/360*2*Math.PI)
 
         for (i in 0 until height) {
             for (j in 0 until width) {
                 try {
-                    val rotx= x*Math.cos(rot)-y*Math.sin(rot)
-                    val roty= x*Math.sin(rot)+y*Math.cos(rot)
+                    val rotx= x*rotc-y*rots
+                    val roty= x*rots+y*rotc
                     akt = f(rotx, roty)
                 } catch (exception: Exception) {
                     akt = 0.0

@@ -29,16 +29,14 @@ class MainActivity : AppCompatActivity() {
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus) {
-//            Log.println(Log.ERROR,"${asd.height}","${asd.width}magic")
-//            Log.println(Log.ERROR,"${asd.measuredHeight}","${asd.measuredWidth}magic")
-
-
-
-            drawer.mode = 0
-            drawer.K = 10
-            drawer.drawFunction(functions[current], -10.0, 10.0, -10.0, 10.0)
-
+            reDraw()
         }
+    }
+    fun reDraw(){
+        drawer.mode = 0
+        drawer.K = 10
+        val minY=8.0*asd.height.toDouble()/asd.width.toDouble()
+        drawer.drawFunction(functions[current], -8.0, 8.0, -minY, minY)
     }
 
 
@@ -53,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
             if(++current == functions.size) current=0
-            onWindowFocusChanged(true)
+            reDraw()
         }
     }
 
@@ -96,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             else {
                 drawer.rotation = drawer.rotation + (event1.x - event2.x).toInt() / 10
             }
-            onWindowFocusChanged(true)
+            reDraw()
             return true
         }
     }
