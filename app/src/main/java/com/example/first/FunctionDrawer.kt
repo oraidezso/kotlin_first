@@ -29,34 +29,31 @@ class FunctionDrawer(imageView: ImageView) {
     private fun calcFValues(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double): DoubleArray {
         val height = iv.height
         val width = iv.width
+
         var minVal = f(minX, minY)
         var maxVal = f(minX, minY)
         val stepX = (maxX - minX) / width
         val stepY = (maxY - minY) / height
         val fValues = DoubleArray(width * height)
-        var x = minX
-        var y = minY
-        var akt: Double
+
         val rotc = Math.cos(rotation.toDouble()/360*2*Math.PI)
         val rots = Math.sin(rotation.toDouble()/360*2*Math.PI)
-
+        var y = minY
         for (i in 0 until height) {
+            var x = minX
             for (j in 0 until width) {
+                var akt:Double
                 try {
-                    val rotx= x*rotc-y*rots
-                    val roty= x*rots+y*rotc
-                    akt = f(rotx, roty)
+                    akt = f( x*rotc-y*rots, x*rots+y*rotc )
                 } catch (exception: Exception) {
                     akt = 0.0
                     Log.println(Log.ERROR, "function error", "${exception.message}")
                 }
-
                 fValues[i * width + j] = akt
                 if (akt < minVal) minVal = akt
                 if (akt > maxVal) maxVal = akt
                 x += stepX
             }
-            x = minX
             y += stepY
         }
 

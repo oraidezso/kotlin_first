@@ -3,40 +3,41 @@ package com.example.first
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import android.graphics.Point
 
 
 class MainActivity : AppCompatActivity() {
-    lateinit var drawer :FunctionDrawer
+    lateinit var drawer: FunctionDrawer
     private lateinit var mDetector: GestureDetectorCompat
-    val functions = arrayOf<(Double, Double) -> Double>(
+    private val functions = arrayOf<(Double, Double) -> Double>(
         { x, y -> Math.sin(y / x) },
+        { x, y -> x * y },
+        { x, y -> x * x + y * y },
         { x, y -> Math.sin(y * x) },
         { x, y -> Math.sin(y) + Math.cos(x) },
         { x, y -> Math.sin(x) * Math.cos(y) },
         { x, y -> Math.sin(y + x) },
         { x, y -> Math.sin(x * x + y * y) }
     )
-    var current=0
+    private var current = 0
+    private var maxX = 3.0
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-
         if (hasFocus) {
             reDraw()
         }
     }
-    fun reDraw(){
-        drawer.mode = 0
-        drawer.K = 10
-        val minY=8.0*asd.height.toDouble()/asd.width.toDouble()
-        drawer.drawFunction(functions[current], -8.0, 8.0, -minY, minY)
+
+    fun reDraw() {
+        val maxY = maxX * asd.height.toDouble() / asd.width.toDouble()
+        drawer.drawFunction(functions[current], -maxX, maxX, -maxY, maxY)
     }
 
 
@@ -45,12 +46,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         drawer = FunctionDrawer(asd)
-        mDetector = GestureDetectorCompat(this, MyGestureListener())
+        drawer.mode = 1
+        drawer.K = 10
+        mDetector = GestureDetectorCompat(this, RotationListener())
         fab.setOnClickListener {
-//                view ->
+            //                view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
-            if(++current == functions.size) current=0
+            if (++current == functions.size) current = 0
             reDraw()
         }
     }
@@ -77,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         return super.onTouchEvent(event)
     }
 
-    private inner class MyGestureListener : GestureDetector.SimpleOnGestureListener() {
+    private inner class RotationListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onFling(
             event1: MotionEvent,
@@ -85,15 +88,18 @@ class MainActivity : AppCompatActivity() {
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            Log.e("tag","onFling: ${event1.x - event2.x}")
-            //event1.x - event2.x
-            if(event1.y>asd.height/2) {
-                drawer.rotation = drawer.rotation - (event1.x - event2.x).toInt() / 10
-                //Log.e("tag", "onFling: ${event1.y}")
-            }
-            else {
-                drawer.rotation = drawer.rotation + (event1.x - event2.x).toInt() / 10
-            }
+            val size = Point()
+            windowManager.defaultDisplay.getSize(size)
+            val height = size.y
+            val y1 = event1.y + asd.height / 2 - height
+            val y2 = event2.y + asd.height / 2 - height
+            val x1 = event1.x - asd.width / 2
+            val x2 = event2.x - asd.width / 2
+            val scalar = (y1 * y2 + x1 * x2).toDouble()
+            val length = Math.sqrt((x1 * x1 + y1 * y1) * (x2 * x2 + y2 * y2).toDouble())
+            val angle = Math.acos(scalar / length) * 360 / (2 * Math.PI)
+            if (x1 * y2 - x2 * y1 > 0) drawer.rotation -= angle.toInt()
+            else drawer.rotation += angle.toInt()
             reDraw()
             return true
         }
