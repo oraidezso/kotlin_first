@@ -1,5 +1,7 @@
 package com.example.first
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AppCompatActivity
@@ -64,15 +66,23 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("ResourceType")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.preferences -> {
+                var settingsFragment = SettingsFragment();
+                val args =  Bundle();
+                settingsFragment.arguments = args;
+                supportFragmentManager.beginTransaction().replace(content_main.id,settingsFragment).commit()
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -98,8 +108,7 @@ class MainActivity : AppCompatActivity() {
             val scalar = (y1 * y2 + x1 * x2).toDouble()
             val length = Math.sqrt((x1 * x1 + y1 * y1) * (x2 * x2 + y2 * y2).toDouble())
             val angle = Math.acos(scalar / length) * 360 / (2 * Math.PI)
-            if (x1 * y2 - x2 * y1 > 0) drawer.rotation -= angle.toInt()
-            else drawer.rotation += angle.toInt()
+            drawer.rotation += if (x1 * y2 - x2 * y1 < 0) angle.toInt() else - angle.toInt()
             reDraw()
             return true
         }
