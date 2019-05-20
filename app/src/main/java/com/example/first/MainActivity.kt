@@ -3,25 +3,24 @@ package com.example.first
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.GestureDetector
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.graphics.Point
+import android.support.design.widget.Snackbar
+import android.util.Log
+import android.view.*
 
 
 class MainActivity : AppCompatActivity() {
     lateinit var drawer: FunctionDrawer
     private lateinit var mDetector: GestureDetectorCompat
+    private lateinit var mScaleDetector:ScaleGestureDetector
     private val functions = arrayOf<(Double, Double) -> Double>(
+        { x, y -> Math.sin(y) + Math.cos(x) },
         { x, y -> Math.sin(y / x) },
         { x, y -> x * y },
         { x, y -> x * x + y * y },
         { x, y -> Math.sin(y * x) },
-        { x, y -> Math.sin(y) + Math.cos(x) },
-        { x, y -> Math.sin(x) * Math.cos(y) },
         { x, y -> Math.sin(y + x) },
         { x, y -> Math.sin(x * x + y * y) }
     )
@@ -46,11 +45,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         drawer = FunctionDrawer(asd)
-        drawer.mode = 1
+        drawer.mode = 0
         drawer.K = 10
         mDetector = GestureDetectorCompat(this, RotationListener())
+        mScaleDetector=ScaleGestureDetector(this,PinchListener())
         fab.setOnClickListener {
-            //                view ->
+//                            view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
             if (++current == functions.size) current = 0
@@ -77,11 +77,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         mDetector.onTouchEvent(event)
+        mScaleDetector.onTouchEvent(event)
         return super.onTouchEvent(event)
     }
 
     private inner class RotationListener : GestureDetector.SimpleOnGestureListener() {
-
         override fun onFling(
             event1: MotionEvent,
             event2: MotionEvent,
@@ -104,4 +104,21 @@ class MainActivity : AppCompatActivity() {
             return true
         }
     }
+
+     inner class PinchListener : ScaleGestureDetector.SimpleOnScaleGestureListener (){
+
+         override fun onScaleEnd(detector: ScaleGestureDetector?) {
+             if (detector != null) {
+                 maxX/=detector.scaleFactor
+                 reDraw()
+                 Log.println(Log.ERROR, "scale factor", "${detector.scaleFactor}")
+                 Log.println(Log.ERROR, "function error", "${detector.focusX}")
+             }
+
+
+             super.onScaleEnd(detector)
+         }
+     }
+
+
 }
