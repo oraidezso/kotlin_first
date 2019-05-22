@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.graphics.Point
-import android.support.design.widget.Snackbar
-import android.util.Log
 import android.view.*
 
 
@@ -51,10 +49,6 @@ class MainActivity : AppCompatActivity() {
         mDetector = GestureDetectorCompat(this, RotationListener())
         mScaleDetector=ScaleGestureDetector(this,PinchListener())
         fab.setOnClickListener {
-//                            view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
-            //if (++current == functions.size) current = 0
             drawer.K++
             reDraw()
         }
@@ -65,15 +59,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.function_0 -> {current=0; return true}
             R.id.function_1 -> {current=1; return true}
@@ -118,16 +108,11 @@ class MainActivity : AppCompatActivity() {
     }
 
      inner class PinchListener : ScaleGestureDetector.SimpleOnScaleGestureListener (){
-
          override fun onScaleEnd(detector: ScaleGestureDetector?) {
              if (detector != null) {
                  maxX/=detector.scaleFactor
                  reDraw()
-                 Log.println(Log.ERROR, "scale factor", "${detector.scaleFactor}")
-                 Log.println(Log.ERROR, "function error", "${detector.focusX}")
              }
-
-
              super.onScaleEnd(detector)
          }
      }
