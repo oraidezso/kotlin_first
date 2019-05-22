@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     )
     private var current = 0
     private var maxX = 3.0
+    var mode=0
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         drawer = FunctionDrawer(asd)
-        drawer.mode = 0
+        drawer.mode = mode
         drawer.K = 10
         mDetector = GestureDetectorCompat(this, RotationListener())
         mScaleDetector=ScaleGestureDetector(this,PinchListener())
@@ -53,7 +54,12 @@ class MainActivity : AppCompatActivity() {
 //                            view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
-            if (++current == functions.size) current = 0
+            //if (++current == functions.size) current = 0
+            drawer.K++
+            reDraw()
+        }
+        fab2.setOnClickListener {
+            if(drawer.K>3)drawer.K--
             reDraw()
         }
     }
@@ -69,7 +75,13 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.function_0 -> {current=0; return true}
+            R.id.function_1 -> {current=1; return true}
+            R.id.function_2 -> {current=2; return true}
+            R.id.function_3 -> {current=3; return true}
+            R.id.function_4 -> {current=4; return true}
+            R.id.function_5 -> {current=5; return true}
+            R.id.function_6 -> {current=6; return true}
             else -> super.onOptionsItemSelected(item)
         }
     }
