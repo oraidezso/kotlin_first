@@ -11,46 +11,43 @@ dokumentáció szövegszerkesztővel, függvény képekkel.
 
 ### Zoom
 
-A szokásos telefonos zoom implementálva lett, de a függvények szimetriája, és az ábrzolás módja miatt nem minden függvényen látható.
+A szokásos kétújjas telefonos zoom implementálva lett, de a függvények szimetriája, és az ábrzolás módja miatt nem minden függvényen látható.
+
+|elötte|utána|
+|-|-|
+| <img src="md_resources/zoom1.png" width=300> | <img src="md_resources/zoom2.png" width=300>|
 
 ### Forgatás
 
-Továbbá A függvények forgathatóak az aktuális özéppont körül.
+Továbbá a függvények eggy újjal forgathatóak a középpont körül.
+
+|elötte|utána|
+|-|-|
+| <img src="md_resources/rot1.png" width=300> | <img src="md_resources/rot2.png" width=300>|
 
 ### Függvény választó
 
-A menüsorból lehet beépített függvényt választani
+A menüsorból lehet a beépített függvények közül választani
+
+|elötte|utána|
+|-|-|
+| <img src="md_resources/fv1.png" width=300> | <img src="md_resources/fv2.png" width=300>|
 
 ### A K paraméter növelése csökkentése
 
 A képernyő alján lévő két gombbal növelhető csökkenthető a K.
 
+|k 10|k 11|k 12|k 13|
+|-|-|-|-|
+| <img src="md_resources/k10.png" width=150> | <img src="md_resources/k11.png" width=150>|<img src="md_resources/k12.png" width=150>|<img src="md_resources/k13.png" width=150>|
+
+
 # Technikai részletek
 
 A program kotlin nyelven íródott androidra
 
-## A Fügvény ábrázoló class
+## A feladatot megoldó fügvényt ábrázoló függvények
 ```kotlin
-
-package com.example.first
-
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.util.Log
-import android.widget.ImageView
-
-class FunctionDrawer(imageView: ImageView) {
-    private val iv = imageView
-    var K = 20
-        set(value) {
-            field = if (value > 2) value else 2
-        }
-    var mode=0
-        set(value) {field=if(value>1)0 else value}
-
-    var rotation=0
-        set(value) {field=value%360}
-
     fun drawFunction(f: (Double, Double) -> Double, minX: Double, maxX: Double, minY: Double, maxY: Double) {
         if (minX >= maxX || minY >= maxY) return
         val fValues = calcFValues(f, minX, maxX, minY, maxY)
@@ -109,24 +106,6 @@ class FunctionDrawer(imageView: ImageView) {
             for (j in 0 until width) {
                 val isBlack = ((fValues[i * width + j] * K).toInt()) % 2 == 0
                 pixels[i * width + j] = if(isBlack)Color.BLACK else Color.WHITE
-            }
-        }
-        return pixels
-    }
-
-    private fun myPixelsFromFValues(fValues: DoubleArray): IntArray {
-        val height = iv.height
-        val width = iv.width
-        val pixels = IntArray(width * height)
-        for (i in 0 until height) {
-            for (j in 0 until width) {
-                val colorValue = (fValues[i * width + j] * 255).toInt()
-                pixels[i * width + j] = Color.argb(
-                    255,
-                    colorValue,
-                    colorValue,
-                    colorValue
-                )
             }
         }
         return pixels
